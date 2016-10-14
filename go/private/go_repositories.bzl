@@ -145,18 +145,17 @@ go_root(
 
 def _go_repository_select_impl(ctx):
   rules_goroot = ctx.os.environ.get("RULES_GOROOT", None)
+  os_name = ctx.os.name
 
   # 1. Configure the goroot path
   if rules_goroot:
     goroot = ctx.path(rules_goroot)
+  elif os_name == 'linux':
+    goroot = ctx.path(ctx.attr._linux).dirname
+  elif os_name == 'mac os x':
+    goroot = ctx.path(ctx.attr._darwin).dirname
   else:
-    os_name = ctx.os.name
-    if os_name == 'linux':
-      goroot = ctx.path(ctx.attr._linux).dirname
-    elif os_name == 'mac os x':
-      goroot = ctx.path(ctx.attr._darwin).dirname
-    else:
-      fail("Unsupported operating system: " + os_name)
+    fail("Unsupported operating system: " + os_name)
 
   # 2. Create the symlinks and write the BUILD file.
   gobin = goroot.get_child("bin")
@@ -176,10 +175,7 @@ def _go_repository_select_impl(ctx):
     go = gobin.get_child("go")
     result = ctx.execute([go, "env"])
     if result.return_code:
-      fail("""
-Something's not right.  Are you sure '%s' points to a functional GOROOT?
---> %s
-""" % (goroot, result.stderr))
+      fail("$RULES_GOROOT/bin/go not found: %s" % (goroot, result.stderr))
 
 
 _go_repository_select = repository_rule(
