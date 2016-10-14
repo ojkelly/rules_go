@@ -144,13 +144,10 @@ go_root(
 """
 
 def _go_repository_select_impl(ctx):
-  rules_goroot = ctx.os.environ.get("RULES_GOROOT", None)
   os_name = ctx.os.name
 
   # 1. Configure the goroot path
-  if rules_goroot:
-    goroot = ctx.path(rules_goroot)
-  elif os_name == 'linux':
+  if os_name == 'linux':
     goroot = ctx.path(ctx.attr._linux).dirname
   elif os_name == 'mac os x':
     goroot = ctx.path(ctx.attr._darwin).dirname
@@ -168,14 +165,6 @@ def _go_repository_select_impl(ctx):
   ctx.file("BUILD", GO_TOOLCHAIN_BUILD_FILE.format(
     goroot = goroot,
   ))
-
-  # 3. If the user has specified the goroot explicitly, confirm a
-  # functional installation.
-  if rules_goroot:
-    go = gobin.get_child("go")
-    result = ctx.execute([go, "env"])
-    if result.return_code:
-      fail("$RULES_GOROOT/bin/go not found: %s" % (goroot, result.stderr))
 
 
 _go_repository_select = repository_rule(
