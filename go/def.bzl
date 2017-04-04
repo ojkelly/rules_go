@@ -84,7 +84,7 @@ go_env_attrs = {
 go_library_attrs = go_env_attrs + {
     "data": attr.label_list(
         allow_files = True,
-        cfg = DATA_CFG,
+        cfg = "data",
     ),
     "srcs": attr.label_list(allow_files = go_filetype),
     "deps": attr.label_list(
