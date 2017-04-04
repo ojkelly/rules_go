@@ -940,7 +940,7 @@ def _xgo_go_library_impl(target, ctx):
 
   srcs = rule.files.srcs
   cgo_object = rule.attr.cgo_object if hasattr(rule.attr, "cgo_object") else None
-  install_std_library = True,
+  install_std_library = True
   features = ctx.features
   library = rule.attr.library if hasattr(rule.attr, "library") else None
   out_lib = xgo_lib
@@ -1004,7 +1004,7 @@ def _xgo_go_binary_impl(target, ctx):
   configuration_bin_dir_path = ctx.configuration.bin_dir.path
   cpp_fragment = ctx.fragments.cpp
   crosstool = rule.files._crosstool
-  install_std_library = True,
+  install_std_library = True
   executable = xgo_out
   features = ctx.features
   label = ctx.label
@@ -1672,7 +1672,7 @@ _cgo_import = rule(
     "_extract_package": attr.label(
       default = Label("//go/tools/extract_package"),
     executable = True,
-      cfg = HOST_CFG,
+      #cfg = HOST_CFG,
     ),
   },
   fragments = ["cpp"],
